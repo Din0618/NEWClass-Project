@@ -19,7 +19,12 @@ public class GameManager : MonoBehaviour
     [Header("Screens")]
     public GameObject countdownUI;
     public GameObject gameUI;
-    public GameObject screen;
+    public GameObject endUI;
+   
+
+    [Header("End Screen UI")]
+    public TMP_Text endUI_score;
+    public TMP_Text endUI_time;
 
 
     [Header("CountDownUI")]
@@ -38,10 +43,18 @@ public class GameManager : MonoBehaviour
       //disable player movement initally
       player.enabled = false;
       SetScreen(countdownUI);
+
+      
+
       // start coroutine 
       StartCoroutine(CountDownRoutine());
 
       startGame();
+    }
+    public void OneRestartButton()
+    {
+        //restart the game scene to play the game again
+        SceneManager.LoadScene(0);
     }
 
     // Update is called once per frame
@@ -56,28 +69,16 @@ public class GameManager : MonoBehaviour
             gameUI_score.text = "Coins: " + player.coinCount; 
             gameUI_health.text = "Health: " + player.health;
             gameUI_time.text = "Time: " + (time * 10). ToString("F2");
-
-
-    void SetScreen()
-        {
-                //disable all other Screens
-                gameUI.SetActive(false);
-                countdownUI.SetActive(false);
-
-
-                //activate the requested screen
-                screen.SetActive(true);
-        }
-    }   
+    }  
 
 
     
     void startGame() {
-        // set the screem to see your 
-    
-    //start the timer 
+        // set the screem to see your stats
+        SetScreen(gameUI);
+
+        //start the timer 
         timeaCTIVE = true;
-    
     }
 
     public void endGame() {
@@ -86,7 +87,12 @@ public class GameManager : MonoBehaviour
 
         //disbale player movement    
         player.enabled = false;
-    }
+      
+        //set the UI to display your stats
+       endUI_score.text = "Score: " + player.coinCount;
+       endUI_time.text = "Time: " + (time * 10).ToString("F2");
+       SetScreen(endUI); 
+    }   
 
     IEnumerator CountDownRoutine()
     {   CountDownText.gameObject.SetActive(true);
@@ -107,9 +113,19 @@ public class GameManager : MonoBehaviour
         //start the Game
         startGame();
     }   
-    public void SetScreen(GameObject screen){
-        screen.SetActive(true);
-
-
+     
+    public void SetScreen(GameObject screen)
+    {  countdownUI.SetActive(false);
+       endUI.SetActive(false);
+       gameUI.SetActive(false);
+       
+       //actovate the request screen
+       screen.SetActive(true);
     }
-}   
+}
+     
+   
+
+
+    
+  

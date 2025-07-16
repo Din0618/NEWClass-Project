@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
+using Input = UnityEngine.Input;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,6 +14,8 @@ public class PlayerController : MonoBehaviour
     public Rigidbody rig;
     public int coinCount;
     public int health;
+
+    public Animator anim; 
     void Movement()
     { 
         // get the input axis 
@@ -30,6 +35,15 @@ public class PlayerController : MonoBehaviour
         //set that velocity 
         rig.velocity = dir;
 
+        if(Mathf.Abs(x) > 0.1f || Mathf.Abs(z) > 0.1f)
+        {
+            anim.SetBool("isRunning", true); 
+        }
+        else
+        {
+            anim.SetBool("isRunning", false);
+        }
+
         
     }
 
@@ -40,6 +54,7 @@ public class PlayerController : MonoBehaviour
 
        //shoot the raycast 
        if (Physics.Raycast(ray, 1.5f)) { 
+            anim.SetTrigger("isJumping");
               rig.AddForce(Vector3.up * jumpforce, ForceMode.Impulse);
        }
     }
@@ -55,9 +70,31 @@ public class PlayerController : MonoBehaviour
         {
             TryJump();
         }
+        if(health <= 0)
+        {
+            anim.SetBool("die", true);
+            StartCoroutine("Die");
+        }
+
+    }
+    IEnumerator DieButCool()
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(0);
     }
     
-        
+        void OnTriggerEnter(Collider other)   
+        {
+            if(other.gameObject.name == "Enemy")
+            {
+                health -= 5;
+            }
+            
+            if(other.gameObject.name == "FallCollider")
+            {
+                SceneManager.LoadScene(0);
+            }
+       }
 
    
     
@@ -66,9 +103,5 @@ public class PlayerController : MonoBehaviour
     
     
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 }

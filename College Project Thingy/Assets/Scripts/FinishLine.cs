@@ -6,7 +6,7 @@ public class FinishLine : MonoBehaviour
 {
 	public GameManager Manager;
 	public GameObject dude;
-	private void OnTriggerEmter(Collider other)
+    void OnTriggerEnter(Collider other)
 	{
 		if(other.gameObject == dude)
 		{
